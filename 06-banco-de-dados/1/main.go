@@ -42,11 +42,24 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	p, err := selectProduct(db, product.ID)
+	// p, err := selectProduct(db, product.ID)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("Product: %v possui o valor de R$ %.2f\n", p.Name, p.Price)
+
+	products, err := selectAllProducts(db)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Product: %v possui o valor de R$ %.2f\n", p.Name, p.Price)
+	for _, p := range products {
+		fmt.Printf("Product: %v, Price: %.2f\n", p.Name, p.Price)
+	}
+
+	err = removeProduct(db, product.ID)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func insertProduct(db *sql.DB, product *Product) error {
@@ -95,4 +108,37 @@ func selectProduct(db *sql.DB, id string) (*Product, error) {
 		return nil, err
 	}
 	return &p, nil
+}
+
+func selectAllProducts(db *sql.DB) ([]Product, error) {
+	//nao necessita de Prepare, pois nao será passado nenhum parametro sql
+	rows, err := db.Query("select id, name, price from products")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var products []Product
+	//vai percorrer cada uma das linhas do resultado da consulta
+	for rows.Next() {
+		var p Product
+		err = rows.Scan(&p.ID, &p.Name, &p.Price)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, p)
+	}
+	return products, nil
+}
+
+func removeProduct(db *sql.DB, id string) error {
+	stmt, err := db.Prepare("delete from products where id = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
