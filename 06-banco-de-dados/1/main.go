@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 
 	//colocar o _ para nao travar o programa pois o mysql nao está sendo diretamente usado
 	_ "github.com/go-sql-driver/mysql"
@@ -36,6 +37,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	product.Price = 1890.20
+	err = updateProduct(db, product)
+	if err != nil {
+		panic(err)
+	}
+	p, err := selectProduct(db, product.ID)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Product: %v possui o valor de R$ %.2f\n", p.Name, p.Price)
 }
 
 func insertProduct(db *sql.DB, product *Product) error {
@@ -44,7 +55,7 @@ func insertProduct(db *sql.DB, product *Product) error {
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
+	defer stmt.Close()
 
 	//executando o stmt para trocar as ? pelos valores
 	_, err = stmt.Exec(product.ID, product.Name, product.Price)
@@ -52,4 +63,36 @@ func insertProduct(db *sql.DB, product *Product) error {
 		panic(err)
 	}
 	return nil
+}
+
+func updateProduct(db *sql.DB, product *Product) error {
+	stmt, err := db.Prepare("update products set name = ?, price = ? where id = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(product.Name, product.Price, product.ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func selectProduct(db *sql.DB, id string) (*Product, error) {
+	stmt, err := db.Prepare("select id, name, price from products where id = ?")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	//definir uma variavel para receber os dados da consulta
+	var p Product
+	//QueryRow => vai buscar apenas uma linha
+	//Scan => vai substituir os dados da consulta nna variavel criada
+	//passar o local na memoria para que os dados sejam alterados na variavel e nao em uma copia dela
+	err = stmt.QueryRow(id).Scan(&p.ID, &p.Name, &p.Price)
+	if err != nil {
+		return nil, err
+	}
+	return &p, nil
 }
