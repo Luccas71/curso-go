@@ -51,4 +51,18 @@ func main() {
 	// for _, p := range products {
 	// 	fmt.Println(p)
 	// }
+
+	//where
+	// var products []Product
+	// db.Where("price < ?", 10).Find(&products)
+	// for _, p := range products {
+	// 	fmt.Println(p)
+	// }
+
+	//like
+	// var products []Product
+	// db.Where("name LIKE ?", "%e%").Find(&products)
+	// for _, p := range products {
+	// 	fmt.Println(p)
+	// }
 }
