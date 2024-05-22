@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -29,14 +31,20 @@ func main() {
 	db.AutoMigrate(&Product{}, Category{})
 
 	//create category
-	category := Category{Name: "Eletronicos"}
-	db.Create(&category)
+	// category := Category{Name: "Eletronicos"}
+	// db.Create(&category)
 
 	//create product
 	product := Product{
-		Name:       "Mouse",
-		Price:      30.0,
-		CategoryId: category.ID,
+		Name:       "Keyboard",
+		Price:      36.0,
+		CategoryId: 1,
 	}
 	db.Create(&product)
+
+	var products []Product
+	db.Preload("Category").Find(&products)
+	for _, product := range products {
+		fmt.Println(product.Name, product.Category.Name)
+	}
 }
