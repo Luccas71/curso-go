@@ -2,48 +2,48 @@ package tax
 
 import "testing"
 
-// func TestCalculatetax(t *testing.T) {
-// 	amount := 400.0
-// 	expected := 5.0
+func TestCalculatetax(t *testing.T) {
+	amount := 400.0
+	expected := 5.0
 
-// 	result := CalculateTax(amount)
+	result := CalculateTax(amount)
 
-// 	if result != expected {
-// 		t.Errorf("Expected %f but got %f", expected, result)
-// 	}
-// }
+	if result != expected {
+		t.Errorf("Expected %f but got %f", expected, result)
+	}
+}
 
 // testando varios valores de um vez
-// func TestCalcTexBatch(t *testing.T) {
-// 	type calcTex struct {
-// 		amount, expect float64
-// 	}
+func TestCalcTexBatch(t *testing.T) {
+	type calcTex struct {
+		amount, expect float64
+	}
 
-// 	table := []calcTex{
-// 		{500.0, 5.0},
-// 		{1000.0, 10.0},
-// 		{1200.0, 10.0},
-// 		{120.0, 5.0},
-// 	}
+	table := []calcTex{
+		{500.0, 5.0},
+		{1000.0, 10.0},
+		{1200.0, 10.0},
+		{120.0, 5.0},
+	}
 
-// 	for _, item := range table {
-// 		result := CalculateTax(item.amount)
-// 		if result != item.expect {
-// 			t.Errorf("Expected %f but got %f", item.expect, result)
-// 		}
-// 	}
-// }
+	for _, item := range table {
+		result := CalculateTax(item.amount)
+		if result != item.expect {
+			t.Errorf("Expected %f but got %f", item.expect, result)
+		}
+	}
+}
 
-// func BenchmarkCalculatetax(b *testing.B) {
-// 	for i := 0; i < b.N; i++ {
-// 		CalculateTax(500.0)
-// 	}
-// }
-// func BenchmarkCalculatetax2(b *testing.B) {
-// 	for i := 0; i < b.N; i++ {
-// 		CalculateTax2(500.0)
-// 	}
-// }
+func BenchmarkCalculatetax(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CalculateTax(500.0)
+	}
+}
+func BenchmarkCalculatetax2(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		CalculateTax2(500.0)
+	}
+}
 
 // coverage => determina o quanto do meu codigo foi testado
 // go test -coverprofile=coverage.out
@@ -70,7 +70,7 @@ func FuzzCalculateTax(f *testing.F) {
 		if amount <= 0 && result != 0 {
 			t.Errorf("Received %f but expected 0", result)
 		}
-		if amount >20000 && result != 20 {
+		if amount > 20000 && result != 20 {
 			t.Errorf("Received %f but expected 20", result)
 		}
 	})
