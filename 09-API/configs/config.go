@@ -5,9 +5,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// var de inicialização
-var cfg *conf
-
 // variaveis de ambiente
 // configs db
 type conf struct {
@@ -25,6 +22,8 @@ type conf struct {
 
 // função para carregar confs de env
 func LoadConfig(path string) (*conf, error) {
+	// var de inicialização
+	var cfg *conf
 	viper.SetConfigName("app_config")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(path)
