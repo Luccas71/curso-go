@@ -6,10 +6,12 @@ import (
 )
 
 type User struct {
+	//conexao com db
 	DB *gorm.DB
 }
 
 func NewUser(db *gorm.DB) *User {
+	//retornar um db
 	return &User{DB: db}
 }
 
